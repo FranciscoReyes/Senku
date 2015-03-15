@@ -1,30 +1,36 @@
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Francisco A. Reyes
  */
 public class WindowSenku extends javax.swing.JFrame {
 
-    
     Senku game;
+
     //Crear metodo para comprobar victoria (buscar en array un "O")
     public WindowSenku() {
         initComponents();
         game = new Senku();
         this.writeTablero();
+        setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);
 
     }
-    
-    private void writeTablero () {
+
+    private void writeTablero() {
+        area.setText(null);
         for (int i = 0; i < game.getBuildedTablero().length; i++) {
             for (int j = 0; j < game.getBuildedTablero().length; j++) {
-                
-                if (j == game.getSizeTablero() -1) {
+
+                if (j == game.getSizeTablero() - 1) {
                     area.append(game.getBuildedTablero()[i][j] + "\n");
                 } else {
                     area.append(game.getBuildedTablero()[i][j]);
@@ -54,9 +60,11 @@ public class WindowSenku extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        botonBack = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        area.setEditable(false);
         area.setColumns(20);
         area.setRows(5);
         jScrollPane1.setViewportView(area);
@@ -78,6 +86,13 @@ public class WindowSenku extends javax.swing.JFrame {
 
         jLabel5.setText("Posición Objetivo:");
 
+        botonBack.setText("Back");
+        botonBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonBackActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -86,32 +101,35 @@ public class WindowSenku extends javax.swing.JFrame {
                 .addGap(37, 37, 37)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(botonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(coordX1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(29, 29, 29)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(coordY1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jLabel1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(coordX2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(coordY2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(Mover)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(coordX1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(10, 10, 10)
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(29, 29, 29)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(coordY1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jLabel1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(coordX2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(coordY2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addComponent(Mover)))))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -140,26 +158,47 @@ public class WindowSenku extends javax.swing.JFrame {
                             .addComponent(jLabel5))
                         .addGap(29, 29, 29)
                         .addComponent(Mover)))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(botonBack)
+                .addGap(51, 51, 51))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void MoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MoverActionPerformed
-        int x1 = Integer.valueOf(coordX1.getText());
-        int y1 = Integer.valueOf(coordY1.getText());
-        int x2 = Integer.valueOf(coordX2.getText());
-        int y2 = Integer.valueOf(coordY2.getText());
-        
-        game.moverFicha(x1, y1, x2, y2);
-        
-        
-        area.setText(null);
-        this.writeTablero();
-        
-        
+
+        try {
+            int x1 = Integer.valueOf(coordX1.getText());
+            int y1 = Integer.valueOf(coordY1.getText());
+            int x2 = Integer.valueOf(coordX2.getText());
+            int y2 = Integer.valueOf(coordY2.getText());
+
+            game.moverFicha(x1, y1, x2, y2);
+
+            area.setText(null);
+            this.writeTablero();
+
+        } catch (NumberFormatException e1) {
+            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, "Caracter no valido", e1);
+        } catch (ArrayIndexOutOfBoundsException e2) {
+            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, "Posición no válida", e2);
+            JOptionPane.showMessageDialog(this, "Posición no válida", "ERROR", JOptionPane.WARNING_MESSAGE);
+        }
+
+
     }//GEN-LAST:event_MoverActionPerformed
+
+    private void botonBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonBackActionPerformed
+        try {
+            game.goBack();
+            this.writeTablero();
+        } catch (IndexOutOfBoundsException e3) {
+            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, "No puedes retorceder más", e3);
+            JOptionPane.showMessageDialog(this, "No puedes retroceder más", "ERROR", JOptionPane.WARNING_MESSAGE);
+        }
+
+    }//GEN-LAST:event_botonBackActionPerformed
 
     /**
      * @param args the command line arguments
@@ -205,6 +244,7 @@ public class WindowSenku extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Mover;
     private javax.swing.JTextArea area;
+    private javax.swing.JButton botonBack;
     private javax.swing.JTextField coordX1;
     private javax.swing.JTextField coordX2;
     private javax.swing.JTextField coordY1;
