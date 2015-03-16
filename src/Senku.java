@@ -32,6 +32,11 @@ public class Senku {
     private String vacio = "    ";
     private String hueco = " .  ";
 
+    private int coordXWin;
+    private int coordYWin;
+    private int countO = 0;
+    private boolean youWin;
+
     private FileReader fr;
     private BufferedReader br;
     private int sizeTablero;
@@ -56,6 +61,18 @@ public class Senku {
                         } else {
                             if (linea.charAt(j) == '.') {
                                 tableroEdit[i][j] = this.hueco;
+                            } else {
+                                if (linea.charAt(j) == '@') {
+                                    tableroEdit[i][j] = this.hueco;
+                                    this.coordXWin = i;
+                                    this.coordYWin = j;
+                                } else {
+                                    if (linea.charAt(j) == 'Q') {
+                                        tableroEdit[i][j] = this.bola;
+                                        this.coordXWin = i;
+                                        this.coordYWin = j;
+                                    }
+                                }
                             }
                         }
                     }
@@ -69,6 +86,30 @@ public class Senku {
 
     }
 
+    public boolean checkWin() {
+        int X = -1;
+        int Y = -1;
+        this.countO= 0;
+        for (int i = 0; i < this.tableroEdit.length; i++) {
+            for (int j = 0; j < this.tableroEdit.length; j++) {
+                if (this.tableroEdit[i][j].contains("O")) {
+                    this.countO++;
+                    X = i;
+                    Y = j;
+                }
+            }
+        }
+
+        if (this.countO == 1 && X == this.coordXWin && Y == this.coordYWin) {
+            youWin = true;
+        } else {
+            if(this.countO == 1 && X != this.coordXWin && Y != this.coordYWin) {
+                youWin = false;
+            }
+        }
+        return youWin;
+    }
+
     public String[][] getBuildedTablero() {
         return this.tableroEdit;
     }
@@ -76,8 +117,10 @@ public class Senku {
     private void leerTablero(String fileName) {
         try {
             br = new BufferedReader(fr = new FileReader(fileName));
+
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(Senku.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Senku.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         this.setSizeTablero(fileName);
     }
@@ -136,14 +179,12 @@ public class Senku {
                 this.saveMove(coordMove);
             }
         }
-
-//        Moves coordMove = new Moves(coordX1, coordY1, coordX2, coordY2);
-//        this.saveMove(coordMove);
+        
 
     }
 
     public void goBack() {
-        //FALLO Cuenta movimientos erroneos. Solo guardar movimientos correctos
+
         int newX3 = -1;
         int newY3 = -1;
 
@@ -176,5 +217,11 @@ public class Senku {
     private void saveMove(Moves name) {
         this.movesSaved.add(0, name);
     }
+    
+    public ArrayList getMovesList() {
+        return this.movesSaved;
+    }
+    
+    
 
 }
