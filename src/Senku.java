@@ -74,13 +74,14 @@ public class Senku {
     private FileReader fr;
     private BufferedReader br;
     private int sizeTablero;
-
+    private String idBoard;
     /**
      *
      */
     public Senku() {
         this.buildTablero(Senku.STANDARD);
     }
+    
 
     /**
      *
@@ -88,6 +89,12 @@ public class Senku {
      */
     public void buildTablero(String fileName) {
         this.leerTablero(fileName);
+        if (!this.movesSaved.isEmpty()) {
+            this.movesSaved.clear();
+        }
+        
+        this.idBoard = fileName;
+        
         this.tableroEdit = new String[this.sizeTablero][this.sizeTablero];
 
         for (int i = 0; i < this.sizeTablero; i++) {
@@ -126,7 +133,23 @@ public class Senku {
         }
 
     }
+    
+    private void leerTablero(String fileName) {
+        try {
+            br = new BufferedReader(fr = new FileReader(fileName));
 
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Senku.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+        this.setSizeTablero(fileName);
+    }
+    
+    public void restartBoard () {
+        this.buildTablero(this.idBoard);
+        this.movesSaved.clear();
+    }
+    
     /**
      *
      * @return
@@ -163,16 +186,7 @@ public class Senku {
         return this.tableroEdit;
     }
 
-    private void leerTablero(String fileName) {
-        try {
-            br = new BufferedReader(fr = new FileReader(fileName));
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Senku.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-        this.setSizeTablero(fileName);
-    }
+    
 
     private void setSizeTablero(String fileName) {
         this.sizeTablero = Integer.valueOf(String.valueOf(fileName.charAt(0)));
@@ -198,7 +212,7 @@ public class Senku {
         int x3 = -1;
         int y3 = -1;
         boolean bola1;
-        boolean bola2;
+        boolean bola2 = true;
 
         if (coordX1 == coordX2) {
             x3 = coordX1;
@@ -227,7 +241,9 @@ public class Senku {
         if (tableroEdit[coordX2][coordY2].contains("O")) {
             bola2 = true;
         } else {
-            bola2 = false;
+            if (tableroEdit[coordX2][coordY2].contains(".")) {
+                 bola2 = false;
+            } 
         }
 
         if (bola1 == true && bola2 == false) {
@@ -313,8 +329,8 @@ public class Senku {
                 Element coords = documento.createElement("COORDINATES");
                 move.appendChild(coords);
                 
-                Element coordIn = documento.createElement("COORDS_INITIAL_BALL");
-                Element coordTo = documento.createElement("COORDS_BALL_JUMPED");
+                Element coordIn = documento.createElement("COORDS_INITIAL");
+                Element coordTo = documento.createElement("COORDS_DESTINY");
                 coordIn.appendChild(documento.createTextNode(this.movesSaved.get(i).getX1() + " - " +
                 this.movesSaved.get(i).getY1()));
                 coordTo.appendChild(documento.createTextNode(this.movesSaved.get(i).getX2()+ " - " +
@@ -341,5 +357,26 @@ public class Senku {
             Logger.getLogger(Senku.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    
+    public void selectBoard(int boardName) {
+        switch (boardName) {
+            case 0:
+                this.buildTablero(Senku.STANDARD);
+                break;
+            case 1:
+                this.buildTablero(Senku.FRENCH);
+                break;
+            case 2:
+                this.buildTablero(Senku.ASIMETRIC);
+                break;
+            case 3:
+                this.buildTablero(Senku.DIAMANT);
+                break;
+            case 4:
+                this.buildTablero(Senku.JCW);
+                break;
+        }
+        this.movesSaved.clear();
+    }
 }

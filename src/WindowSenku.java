@@ -2,6 +2,7 @@
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.apache.commons.lang3.time.StopWatch;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,9 +15,11 @@ import javax.swing.JOptionPane;
  */
 public class WindowSenku extends javax.swing.JFrame {
 
-    //Cosas que hacer, Terminar Reiniciar, metodo Selector Niveles
+    //Cosas que hacer, Terminar Reiniciar, metodo Selector Niveles, Idioma automatico, CSV, ContadordeTiempo
 
     Senku game = new Senku();
+    StopWatch timeCounter = new StopWatch();
+    
 
     //Crear metodo para comprobar victoria (buscar en array un "O")
 
@@ -25,7 +28,7 @@ public class WindowSenku extends javax.swing.JFrame {
      */
         public WindowSenku() {
         initComponents();
-
+        timeCounter.start();
         this.writeTablero();
         setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);
 
@@ -86,6 +89,7 @@ public class WindowSenku extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         botonBack = new javax.swing.JButton();
         restartButton = new javax.swing.JButton();
+        selectNewBoard = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -130,19 +134,30 @@ public class WindowSenku extends javax.swing.JFrame {
             }
         });
 
+        selectNewBoard.setText("Nuevo Tablero");
+        selectNewBoard.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectNewBoardActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(selectNewBoard)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(restartButton))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(botonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(24, 24, 24)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel4)
                                     .addComponent(jLabel5))
@@ -170,19 +185,15 @@ public class WindowSenku extends javax.swing.JFrame {
                                         .addComponent(Mover))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(10, 10, 10)
-                                        .addComponent(jLabel1))))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(restartButton)))
-                .addContainerGap(18, Short.MAX_VALUE))
+                                        .addComponent(jLabel1))))
+                            .addComponent(botonBack, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 2, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(75, 75, 75)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(71, 71, 71)
                         .addComponent(jLabel1)
@@ -201,11 +212,16 @@ public class WindowSenku extends javax.swing.JFrame {
                             .addComponent(coordY2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel5))
                         .addGap(29, 29, 29)
-                        .addComponent(Mover)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(botonBack)
-                .addGap(18, 18, 18)
-                .addComponent(restartButton)
+                        .addComponent(Mover))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(botonBack)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(restartButton)
+                    .addComponent(selectNewBoard))
                 .addGap(10, 10, 10))
         );
 
@@ -257,8 +273,17 @@ public class WindowSenku extends javax.swing.JFrame {
     }//GEN-LAST:event_botonBackActionPerformed
 
     private void restartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartButtonActionPerformed
-        game = new Senku();
+        if (!timeCounter.isStopped()) {
+            timeCounter.stop();
+            timeCounter.reset();
+        }
+        game.restartBoard();
         this.writeTablero();
+        
+        if(!timeCounter.isStarted()) {
+            timeCounter.start();
+        }
+        
     }//GEN-LAST:event_restartButtonActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -270,10 +295,26 @@ public class WindowSenku extends javax.swing.JFrame {
         if (reply == JOptionPane.OK_OPTION) {
             game.createMovesHistoryXML();
             this.dispose();
-        } else {
-            
         }
     }//GEN-LAST:event_formWindowClosing
+
+    private void selectNewBoardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectNewBoardActionPerformed
+        if (!timeCounter.isStopped()) {
+            timeCounter.stop();
+            timeCounter.reset();
+        }
+        
+        String[] levels = {"STANDARD", "FRENCH", "ASIMETRIC", "DIAMANT", "JCW"};
+        int result = JOptionPane.showOptionDialog(this, "Elige nivel", "Selección niveles", 
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, levels, levels[0]);
+        
+        game.selectBoard(result);
+        this.writeTablero();
+        if(!timeCounter.isStarted()) {
+            timeCounter.start();
+        }
+        //SEGUIR
+    }//GEN-LAST:event_selectNewBoardActionPerformed
 
     /**
      * @param args the command line arguments
@@ -331,5 +372,6 @@ public class WindowSenku extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton restartButton;
+    private javax.swing.JButton selectNewBoard;
     // End of variables declaration//GEN-END:variables
 }
