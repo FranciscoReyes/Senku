@@ -22,18 +22,34 @@ public class Moves {
         this.y2 = y2;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getX1 () {
         return this.x1;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getY1 () {
         return this.y1;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getX2 () {
         return this.x2;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getY2 () {
         return this.y2;
     }

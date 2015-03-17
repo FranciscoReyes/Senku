@@ -13,22 +13,28 @@ import javax.swing.JOptionPane;
  * @author Francisco A. Reyes
  */
 public class WindowSenku extends javax.swing.JFrame {
-    //Cosas que hacer. Guardar XML, Metodo Reiniciar, metodo Selector Niveles
+
+    //Cosas que hacer, Terminar Reiniciar, metodo Selector Niveles
+
     Senku game = new Senku();
 
     //Crear metodo para comprobar victoria (buscar en array un "O")
-    public WindowSenku() {
+
+    /**
+     *
+     */
+        public WindowSenku() {
         initComponents();
-        
+
         this.writeTablero();
-        //setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);
 
     }
 
     private void writeTablero() {
         area.setText(null);
         area.setText("(Y)\n");
-        
+
         for (int i = 0; i < game.getBuildedTablero().length; i++) {
             for (int j = 0; j < game.getBuildedTablero().length; j++) {
 
@@ -43,8 +49,8 @@ public class WindowSenku extends javax.swing.JFrame {
                 }
             }
         }
-        
-         switch (game.getSizeTablero()) {
+
+        switch (game.getSizeTablero()) {
             case 7:
                 area.append("      0 1  2  3 4  5  6 (X)");
                 break;
@@ -82,6 +88,11 @@ public class WindowSenku extends javax.swing.JFrame {
         restartButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         area.setEditable(false);
         area.setColumns(20);
@@ -213,15 +224,19 @@ public class WindowSenku extends javax.swing.JFrame {
 
             area.setText(null);
             this.writeTablero();
-            
-            if (game.checkWin() == true) {
-                JOptionPane.showMessageDialog(this, "Enhorabuena, has ganado", "Genial", JOptionPane.INFORMATION_MESSAGE, null);
-            } else {
-                JOptionPane.showMessageDialog(this, "Lo siento, no lo has conseguido", "Derrota", JOptionPane.INFORMATION_MESSAGE, null);
+
+            if (game.checkWin() != 0) {
+                if (game.checkWin() == 1) {
+                    JOptionPane.showMessageDialog(this, "Enhorabuena, has ganado", "Genial", JOptionPane.INFORMATION_MESSAGE, null);
+                } else {
+                    if (game.checkWin() == 2)
+                    JOptionPane.showMessageDialog(this, "Lo siento, no lo has conseguido", "Derrota", JOptionPane.INFORMATION_MESSAGE, null);
+                }
             }
 
         } catch (NumberFormatException e1) {
             Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, "Caracter no valido", e1);
+            JOptionPane.showMessageDialog(this, "Caracter no válido", "ERROR", JOptionPane.WARNING_MESSAGE);
         } catch (ArrayIndexOutOfBoundsException e2) {
             Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, "Posición no válida", e2);
             JOptionPane.showMessageDialog(this, "Posición no válida", "ERROR", JOptionPane.WARNING_MESSAGE);
@@ -243,7 +258,22 @@ public class WindowSenku extends javax.swing.JFrame {
 
     private void restartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartButtonActionPerformed
         game = new Senku();
+        this.writeTablero();
     }//GEN-LAST:event_restartButtonActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        int reply = JOptionPane.showConfirmDialog(
+                this, "¿Desea salir del juego?", "¿Estas seguro?",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.INFORMATION_MESSAGE);
+                
+        if (reply == JOptionPane.OK_OPTION) {
+            game.createMovesHistoryXML();
+            this.dispose();
+        } else {
+            
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
