@@ -328,16 +328,22 @@ public class Senku {
                 
                 Element coords = documento.createElement("COORDINATES");
                 move.appendChild(coords);
+                              
                 
-                Element coordIn = documento.createElement("COORDS_INITIAL");
-                Element coordTo = documento.createElement("COORDS_DESTINY");
-                coordIn.appendChild(documento.createTextNode(this.movesSaved.get(i).getX1() + " - " +
-                this.movesSaved.get(i).getY1()));
-                coordTo.appendChild(documento.createTextNode(this.movesSaved.get(i).getX2()+ " - " +
-                this.movesSaved.get(i).getY2()));
+                Element x1 = documento.createElement("INITIAL_X");
+                Element y1 = documento.createElement("INITIAL_Y");
+                Element x2 = documento.createElement("DESTINY_X");
+                Element y2 = documento.createElement("DESTINY_Y");
+                x1.appendChild(documento.createTextNode(""+this.movesSaved.get(i).getX1()));
+                y1.appendChild(documento.createTextNode(""+this.movesSaved.get(i).getY1()));
+                x2.appendChild(documento.createTextNode(""+this.movesSaved.get(i).getX2()));
+                y2.appendChild(documento.createTextNode(""+this.movesSaved.get(i).getY2()));
                 
-                coords.appendChild(coordIn);
-                coords.appendChild(coordTo);
+                coords.appendChild(x1);
+                coords.appendChild(y1);
+                coords.appendChild(x2);
+                coords.appendChild(y2);
+                
             }
             
             TransformerFactory fábricaTransformador = TransformerFactory.newInstance();
