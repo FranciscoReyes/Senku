@@ -17,13 +17,13 @@ import org.apache.commons.lang3.time.StopWatch;
  */
 public class WindowSenku extends javax.swing.JFrame {
 
-    //Cosas que hacer, Idioma automatico, CSV, ContadordeTiempo
+    //Cosas que hacer, CSV, ContadordeTiempo
 
     Senku game = new Senku();
     StopWatch timeCounter = new StopWatch();
     
     private static Locale locale = Locale.getDefault();
-    
+    ResourceBundle bundle = ResourceBundle.getBundle("res/strings", locale);
     
 
     /**
@@ -33,9 +33,7 @@ public class WindowSenku extends javax.swing.JFrame {
         initComponents();
         timeCounter.start();
         this.writeTablero();
-        setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);
-        
-        ResourceBundle bundle = ResourceBundle.getBundle("res/strings", locale);
+        setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);       
             System.out.println(locale.getDisplayCountry());
     }
 
@@ -257,19 +255,19 @@ public class WindowSenku extends javax.swing.JFrame {
 
             if (game.checkWin() != 0) {
                 if (game.checkWin() == 1) {
-                    JOptionPane.showMessageDialog(this, "Enhorabuena, has ganado", "Genial", JOptionPane.INFORMATION_MESSAGE, null);
+                    JOptionPane.showMessageDialog(this, bundle.getString("winner"), bundle.getString("titlewinner"), JOptionPane.INFORMATION_MESSAGE, null);
                 } else {
                     if (game.checkWin() == 2)
-                    JOptionPane.showMessageDialog(this, "Lo siento, no lo has conseguido", "Derrota", JOptionPane.INFORMATION_MESSAGE, null);
+                    JOptionPane.showMessageDialog(this, bundle.getString("lose"), bundle.getString("titlelose"), JOptionPane.INFORMATION_MESSAGE, null);
                 }
             }
 
         } catch (NumberFormatException e1) {
-            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, "Caracter no valido", e1);
-            JOptionPane.showMessageDialog(this, "Caracter no válido", "ERROR", JOptionPane.WARNING_MESSAGE);
+            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, bundle.getString("errorcarac"), e1);
+            JOptionPane.showMessageDialog(this, bundle.getString("errorcarac"), bundle.getString("titleerror"), JOptionPane.WARNING_MESSAGE);
         } catch (ArrayIndexOutOfBoundsException e2) {
-            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, "Posición no válida", e2);
-            JOptionPane.showMessageDialog(this, "Posición no válida", "ERROR", JOptionPane.WARNING_MESSAGE);
+            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING,  bundle.getString("errPos"), e2);
+            JOptionPane.showMessageDialog(this, bundle.getString("errPos"), bundle.getString("titleerror"), JOptionPane.WARNING_MESSAGE);
         }
 
 
@@ -280,8 +278,8 @@ public class WindowSenku extends javax.swing.JFrame {
             game.goBack();
             this.writeTablero();
         } catch (IndexOutOfBoundsException e3) {
-            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, "No puedes retorceder más", e3);
-            JOptionPane.showMessageDialog(this, "No puedes retroceder más", "ERROR", JOptionPane.WARNING_MESSAGE);
+            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, bundle.getString("backMsg"), e3);
+            JOptionPane.showMessageDialog(this, bundle.getString("backMsg"), bundle.getString("titleerror"), JOptionPane.WARNING_MESSAGE);
         }
 
     }//GEN-LAST:event_botonBackActionPerformed
@@ -302,7 +300,7 @@ public class WindowSenku extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         int reply = JOptionPane.showConfirmDialog(
-                this, "¿Desea salir del juego?", "¿Estas seguro?",
+                this, bundle.getString("exitGameMsg"), bundle.getString("sure"),
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.INFORMATION_MESSAGE);
                 
@@ -319,7 +317,7 @@ public class WindowSenku extends javax.swing.JFrame {
         }
         
         String[] levels = {"STANDARD", "FRENCH", "ASIMETRIC", "DIAMANT", "JCW"};
-        int result = JOptionPane.showOptionDialog(this, "Elige nivel", "Selección niveles", 
+        int result = JOptionPane.showOptionDialog(this, bundle.getString("chooseLevel"), bundle.getString("selectLevel"), 
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, levels, levels[0]);
         
         game.selectBoard(result);

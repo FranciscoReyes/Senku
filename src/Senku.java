@@ -145,6 +145,9 @@ public class Senku {
         this.setSizeTablero(fileName);
     }
     
+    /**
+     *
+     */
     public void restartBoard () {
         this.buildTablero(this.idBoard);
         this.movesSaved.clear();
@@ -364,7 +367,10 @@ public class Senku {
         }
     }
     
-    
+    /**
+     *
+     * @param boardName
+     */
     public void selectBoard(int boardName) {
         switch (boardName) {
             case 0:
