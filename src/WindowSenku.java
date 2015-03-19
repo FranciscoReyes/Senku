@@ -23,18 +23,18 @@ public class WindowSenku extends javax.swing.JFrame {
     StopWatch timeCounter = new StopWatch();
     
     private static Locale locale = Locale.getDefault();
+    
     ResourceBundle bundle = ResourceBundle.getBundle("res/strings", locale);
     
 
     /**
-     *
+     * Constructor interfaz
      */
         public WindowSenku() {
         initComponents();
         timeCounter.start();
         this.writeTablero();
         setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);       
-            System.out.println(locale.getDisplayCountry());
     }
 
     private void writeTablero() {
@@ -254,10 +254,10 @@ public class WindowSenku extends javax.swing.JFrame {
             this.writeTablero();
 
             if (game.checkWin() != 0) {
-                if (game.checkWin() == 1) {
+                if (game.checkWin() == Senku.WINNER) {
                     JOptionPane.showMessageDialog(this, bundle.getString("winner"), bundle.getString("titlewinner"), JOptionPane.INFORMATION_MESSAGE, null);
                 } else {
-                    if (game.checkWin() == 2)
+                    if (game.checkWin() == Senku.LOSER)
                     JOptionPane.showMessageDialog(this, bundle.getString("lose"), bundle.getString("titlelose"), JOptionPane.INFORMATION_MESSAGE, null);
                 }
             }

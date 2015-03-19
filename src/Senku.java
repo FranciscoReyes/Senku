@@ -34,29 +34,39 @@ import org.w3c.dom.Element;
 public class Senku {
 
     /**
-     *
+     * Constante para indicar tablero Estandar
      */
     public static final String STANDARD = "7EstandarLEVEL.txt";
 
     /**
-     *
+     * Constante para indicar tablero Frances
      */
     public static final String FRENCH = "7FrenchLEVEL.txt";
 
     /**
-     *
+     * Constante para indicar tablero Asimetric
      */
     public static final String ASIMETRIC = "8AsimetricLEVEL.txt";
 
     /**
-     *
+     * Constante para indicar tablero Diamant
      */
     public static final String DIAMANT = "9DiamantLEVEL.txt";
 
     /**
-     *
+     * Constante para indicar tablero JCW
      */
     public static final String JCW = "9JCWLEVEL.txt";
+    
+    /**
+     * Constante para indicar Ganador
+     */
+    public static final int WINNER = 1;
+    
+    /**
+     * Constante para indicar Perdedor
+     */
+    public static final int LOSER = 2;
 
     private String[][] tableroEdit;
 
@@ -76,7 +86,7 @@ public class Senku {
     private int sizeTablero;
     private String idBoard;
     /**
-     *
+     * Constructor SENKU. Construye el tablero Standard por defecto
      */
     public Senku() {
         this.buildTablero(Senku.STANDARD);
@@ -84,8 +94,8 @@ public class Senku {
     
 
     /**
-     *
-     * @param fileName
+     * Método para construir el tablero
+     * @param fileName Nombre del archivo de tablero
      */
     public void buildTablero(String fileName) {
         this.leerTablero(fileName);
@@ -146,16 +156,17 @@ public class Senku {
     }
     
     /**
-     *
+     * Reinicia el tablero según el tablero actual
      */
     public void restartBoard () {
         this.buildTablero(this.idBoard);
         this.movesSaved.clear();
+        this.youWin = 0;
     }
     
     /**
-     *
-     * @return
+     * Comprueba mediante condiciones si resuelves el tablero
+     * @return boolean true si ganas el juego
      */
     public int checkWin() {
         int X = -1;
@@ -182,33 +193,33 @@ public class Senku {
     }
 
     /**
-     *
-     * @return
+     * Metodo para obtener el tablero en una matriz
+     * @return matriz con el contenido del tablero
      */
     public String[][] getBuildedTablero() {
         return this.tableroEdit;
     }
 
     
-
+    // establece el tamaño del tablero segun archivo
     private void setSizeTablero(String fileName) {
         this.sizeTablero = Integer.valueOf(String.valueOf(fileName.charAt(0)));
     }
 
     /**
-     *
-     * @return
+     * Devuelve el tamaño del tablero
+     * @return in tamaño del tablero
      */
     public int getSizeTablero() {
         return this.sizeTablero;
     }
 
     /**
-     *
-     * @param coordX1
-     * @param coordY1
-     * @param coordX2
-     * @param coordY2
+     * Método para recibe las coordenadas del movimiento, las comprueba y lo escribe en el tablero si son correctas
+     * @param coordX1 coordenada X ficha origen (num fila matriz)
+     * @param coordY1 coordenada Y ficha origen (num columna matriz)
+     * @param coordX2 coordenada X ficha destino (num fila matriz)
+     * @param coordY2 coordenada Y ficha destino (num columna matriz)
      */
     public void moverFicha(int coordX1, int coordY1, int coordX2, int coordY2) {
 
@@ -262,7 +273,7 @@ public class Senku {
     }
 
     /**
-     *
+     * Deshace los movimientos, reescribiendo el tablero según orden en arraylist que los contiene
      */
     public void goBack() {
 
@@ -300,15 +311,15 @@ public class Senku {
     }
 
     /**
-     *
-     * @return
+     * Método para obtener la lista de movimientos guardados 
+     * @return arraylist de objetos "Moves"
      */
     public ArrayList getMovesList() {
         return this.movesSaved;
     }
 
     /**
-     *
+     * crea el XML con los diferentes movimientos válidos realizados
      */
     public void createMovesHistoryXML() {
 
@@ -368,8 +379,8 @@ public class Senku {
     }
     
     /**
-     *
-     * @param boardName
+     * Método para seleccionar el tablero y reniciar
+     * @param boardName int indicando el tablero según JOptionPane (Dialog) 
      */
     public void selectBoard(int boardName) {
         switch (boardName) {
@@ -390,5 +401,6 @@ public class Senku {
                 break;
         }
         this.movesSaved.clear();
+        this.youWin = 0;
     }
 }

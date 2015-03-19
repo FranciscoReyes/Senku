@@ -23,32 +23,32 @@ public class Moves {
     }
     
     /**
-     *
-     * @return
+     * Devuelve coordenada X1
+     * @return int coordenada origen X1 (fila matriz)
      */
     public int getX1 () {
         return this.x1;
     }
     
     /**
-     *
-     * @return
+     * Devuelve coordenada Y1
+     * @return int coordenada origen Y1 (columna matriz)
      */
     public int getY1 () {
         return this.y1;
     }
     
     /**
-     *
-     * @return
+     * Devuelve coordenada X2
+     * @return int coordenada destino X2 (fila matriz)
      */
     public int getX2 () {
         return this.x2;
     }
     
     /**
-     *
-     * @return
+     * Devuelve coordenada Y1 
+     * @return int coordenada destino Y2(columna matriz)
      */
     public int getY2 () {
         return this.y2;
