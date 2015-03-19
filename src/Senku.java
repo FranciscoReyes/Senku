@@ -1,10 +1,14 @@
 
 import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -19,8 +23,10 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -57,12 +63,12 @@ public class Senku {
      * Constante para indicar tablero JCW
      */
     public static final String JCW = "9JCWLEVEL.txt";
-    
+
     /**
      * Constante para indicar Ganador
      */
     public static final int WINNER = 1;
-    
+
     /**
      * Constante para indicar Perdedor
      */
@@ -85,26 +91,35 @@ public class Senku {
     private BufferedReader br;
     private int sizeTablero;
     private String idBoard;
+    private int ballcounter;
+    
+    private String name = "";
+    BufferedWriter bf;
+
     /**
      * Constructor SENKU. Construye el tablero Standard por defecto
      */
     public Senku() {
         this.buildTablero(Senku.STANDARD);
     }
-    
 
     /**
      * Método para construir el tablero
+     *
      * @param fileName Nombre del archivo de tablero
      */
     public void buildTablero(String fileName) {
+        int counterBall = 0;
+        
+        this.setBoardName(fileName);
+        
         this.leerTablero(fileName);
         if (!this.movesSaved.isEmpty()) {
             this.movesSaved.clear();
         }
-        
+
         this.idBoard = fileName;
-        
+
         this.tableroEdit = new String[this.sizeTablero][this.sizeTablero];
 
         for (int i = 0; i < this.sizeTablero; i++) {
@@ -116,6 +131,7 @@ public class Senku {
                     } else {
                         if (linea.charAt(j) == 'O') {
                             tableroEdit[i][j] = this.bola;
+                            counterBall++;
                         } else {
                             if (linea.charAt(j) == '.') {
                                 tableroEdit[i][j] = this.hueco;
@@ -127,6 +143,7 @@ public class Senku {
                                 } else {
                                     if (linea.charAt(j) == 'Q') {
                                         tableroEdit[i][j] = this.bola;
+                                        counterBall++;
                                         this.coordXWin = i;
                                         this.coordYWin = j;
                                     }
@@ -135,15 +152,13 @@ public class Senku {
                         }
                     }
                 }
-
             } catch (IOException ex) {
                 Logger.getLogger(Senku.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
-
+        this.ballcounter = counterBall;
     }
-    
+
     private void leerTablero(String fileName) {
         try {
             br = new BufferedReader(fr = new FileReader(fileName));
@@ -154,18 +169,19 @@ public class Senku {
         }
         this.setSizeTablero(fileName);
     }
-    
+
     /**
      * Reinicia el tablero según el tablero actual
      */
-    public void restartBoard () {
+    public void restartBoard() {
         this.buildTablero(this.idBoard);
         this.movesSaved.clear();
         this.youWin = 0;
     }
-    
+
     /**
      * Comprueba mediante condiciones si resuelves el tablero
+     *
      * @return boolean true si ganas el juego
      */
     public int checkWin() {
@@ -194,13 +210,13 @@ public class Senku {
 
     /**
      * Metodo para obtener el tablero en una matriz
+     *
      * @return matriz con el contenido del tablero
      */
     public String[][] getBuildedTablero() {
         return this.tableroEdit;
     }
 
-    
     // establece el tamaño del tablero segun archivo
     private void setSizeTablero(String fileName) {
         this.sizeTablero = Integer.valueOf(String.valueOf(fileName.charAt(0)));
@@ -208,6 +224,7 @@ public class Senku {
 
     /**
      * Devuelve el tamaño del tablero
+     *
      * @return in tamaño del tablero
      */
     public int getSizeTablero() {
@@ -215,7 +232,9 @@ public class Senku {
     }
 
     /**
-     * Método para recibe las coordenadas del movimiento, las comprueba y lo escribe en el tablero si son correctas
+     * Método para recibe las coordenadas del movimiento, las comprueba y lo
+     * escribe en el tablero si son correctas
+     *
      * @param coordX1 coordenada X ficha origen (num fila matriz)
      * @param coordY1 coordenada Y ficha origen (num columna matriz)
      * @param coordX2 coordenada X ficha destino (num fila matriz)
@@ -256,8 +275,8 @@ public class Senku {
             bola2 = true;
         } else {
             if (tableroEdit[coordX2][coordY2].contains(".")) {
-                 bola2 = false;
-            } 
+                bola2 = false;
+            }
         }
 
         if (bola1 == true && bola2 == false) {
@@ -267,13 +286,14 @@ public class Senku {
                 tableroEdit[coordX1][coordY1] = " .  ";
                 Moves coordMove = new Moves(coordX1, coordY1, coordX2, coordY2);
                 this.saveMove(coordMove);
+                this.ballcounter--;
             }
         }
-
     }
 
     /**
-     * Deshace los movimientos, reescribiendo el tablero según orden en arraylist que los contiene
+     * Deshace los movimientos, reescribiendo el tablero según orden en
+     * arraylist que los contiene
      */
     public void goBack() {
 
@@ -303,6 +323,7 @@ public class Senku {
 
         this.tableroEdit[newX3][newY3] = "O ";
         this.movesSaved.remove(0);
+        this.ballcounter++;
 
     }
 
@@ -311,7 +332,8 @@ public class Senku {
     }
 
     /**
-     * Método para obtener la lista de movimientos guardados 
+     * Método para obtener la lista de movimientos guardados
+     *
      * @return arraylist de objetos "Moves"
      */
     public ArrayList getMovesList() {
@@ -327,39 +349,37 @@ public class Senku {
             DocumentBuilderFactory fábricaCreadorDocumento = DocumentBuilderFactory.newInstance();
             DocumentBuilder creadorDocumento = fábricaCreadorDocumento.newDocumentBuilder();
             Document documento = creadorDocumento.newDocument();
-            
+
             Element root = documento.createElement("SENKU");
             documento.appendChild(root);
-            
-            for (int i=0; i<this.movesSaved.size(); i++) {
+
+            for (int i = 0; i < this.movesSaved.size(); i++) {
                 Element move = documento.createElement("MOVE");
                 root.appendChild(move);
-                
+
                 Element pos = documento.createElement("MOVE_LIST");
                 pos.appendChild(documento.createTextNode(String.valueOf(i + 1)));
                 move.appendChild(pos);
-                
-                
+
                 Element coords = documento.createElement("COORDINATES");
                 move.appendChild(coords);
-                              
-                
+
                 Element x1 = documento.createElement("INITIAL_X");
                 Element y1 = documento.createElement("INITIAL_Y");
                 Element x2 = documento.createElement("DESTINY_X");
                 Element y2 = documento.createElement("DESTINY_Y");
-                x1.appendChild(documento.createTextNode(""+this.movesSaved.get(i).getX1()));
-                y1.appendChild(documento.createTextNode(""+this.movesSaved.get(i).getY1()));
-                x2.appendChild(documento.createTextNode(""+this.movesSaved.get(i).getX2()));
-                y2.appendChild(documento.createTextNode(""+this.movesSaved.get(i).getY2()));
-                
+                x1.appendChild(documento.createTextNode("" + this.movesSaved.get(i).getX1()));
+                y1.appendChild(documento.createTextNode("" + this.movesSaved.get(i).getY1()));
+                x2.appendChild(documento.createTextNode("" + this.movesSaved.get(i).getX2()));
+                y2.appendChild(documento.createTextNode("" + this.movesSaved.get(i).getY2()));
+
                 coords.appendChild(x1);
                 coords.appendChild(y1);
                 coords.appendChild(x2);
                 coords.appendChild(y2);
-                
+
             }
-            
+
             TransformerFactory fábricaTransformador = TransformerFactory.newInstance();
             Transformer transformador = fábricaTransformador.newTransformer();
             transformador.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -368,7 +388,7 @@ public class Senku {
 
             Result destino = new StreamResult("historic.xml");
             transformador.transform(origen, destino);
-            
+
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(Senku.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TransformerConfigurationException ex) {
@@ -377,10 +397,11 @@ public class Senku {
             Logger.getLogger(Senku.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     /**
      * Método para seleccionar el tablero y reniciar
-     * @param boardName int indicando el tablero según JOptionPane (Dialog) 
+     *
+     * @param boardName int indicando el tablero según JOptionPane (Dialog)
      */
     public void selectBoard(int boardName) {
         switch (boardName) {
@@ -402,5 +423,52 @@ public class Senku {
         }
         this.movesSaved.clear();
         this.youWin = 0;
+    }
+    
+    private void setBoardName(String filename) {
+        
+        if(filename.contains("Estandar")) {
+            this.name = "Estandar";
+        } else {
+            if (filename.contains("French")) {
+                this.name = "French";
+            } else {
+                if (filename.contains("Asimetric")) {
+                    this.name = "Asimetric";
+                } else {
+                    if (filename.contains("Diamant")) {
+                        this.name = "Diamant";
+                    } else {
+                        if (filename.contains("JCW")) {
+                            this.name = "JCW";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private String getBoardName() {
+        return this.name;
+    }
+
+    public void createCSV() {
+        try {
+            bf = new BufferedWriter(new FileWriter("results.csv", true));
+            bf.write("Fecha y hora, Nombre Tablero, Fichas restantes, Tiempo\n");
+        } catch (IOException ex) {
+            Logger.getLogger(Senku.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void writeCSV(long millis) {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            DateFormat formato = DateFormat.getDateTimeInstance();
+            bf.append(formato.format(calendar.getTime()) + ", " + this.getBoardName() + ", " +
+                    this.ballcounter + ", " + DurationFormatUtils.formatDuration(millis, "mm:ss")+"\n");
+        } catch (IOException ex) {
+            Logger.getLogger(Senku.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
