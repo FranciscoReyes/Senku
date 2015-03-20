@@ -2,6 +2,7 @@
 import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -24,6 +25,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.apache.commons.lang3.time.StopWatch;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -92,9 +94,12 @@ public class Senku {
     private int sizeTablero;
     private String idBoard;
     private int ballcounter;
-    
+
     private String name = "";
     BufferedWriter bf;
+
+    StopWatch timeCounter = new StopWatch();
+    private File file = new File("results.csv");
 
     /**
      * Constructor SENKU. Construye el tablero Standard por defecto
@@ -110,9 +115,9 @@ public class Senku {
      */
     public void buildTablero(String fileName) {
         int counterBall = 0;
-        
+
         this.setBoardName(fileName);
-        
+
         this.leerTablero(fileName);
         if (!this.movesSaved.isEmpty()) {
             this.movesSaved.clear();
@@ -174,6 +179,10 @@ public class Senku {
      * Reinicia el tablero según el tablero actual
      */
     public void restartBoard() {
+        if (!timeCounter.isStopped()) {
+            timeCounter.stop();
+        }
+
         this.buildTablero(this.idBoard);
         this.movesSaved.clear();
         this.youWin = 0;
@@ -241,6 +250,10 @@ public class Senku {
      * @param coordY2 coordenada Y ficha destino (num columna matriz)
      */
     public void moverFicha(int coordX1, int coordY1, int coordX2, int coordY2) {
+
+        if (!timeCounter.isStarted()) {
+            timeCounter.start();
+        }
 
         int x3 = -1;
         int y3 = -1;
@@ -404,6 +417,10 @@ public class Senku {
      * @param boardName int indicando el tablero según JOptionPane (Dialog)
      */
     public void selectBoard(int boardName) {
+         if (!timeCounter.isStopped()) {
+            timeCounter.stop();
+            timeCounter.reset();
+        }
         switch (boardName) {
             case 0:
                 this.buildTablero(Senku.STANDARD);
@@ -423,11 +440,12 @@ public class Senku {
         }
         this.movesSaved.clear();
         this.youWin = 0;
-    }
-    
-    private void setBoardName(String filename) {
         
-        if(filename.contains("Estandar")) {
+    }
+
+    private void setBoardName(String filename) {
+
+        if (filename.contains("Estandar")) {
             this.name = "Estandar";
         } else {
             if (filename.contains("French")) {
@@ -447,28 +465,44 @@ public class Senku {
             }
         }
     }
-    
+
     private String getBoardName() {
         return this.name;
     }
 
+    /**
+     * Crear archivo CSV con histórico de partidas
+     *
+     * @param millis long indicando milisegundos para contar el tiempo
+     */
     public void createCSV() {
+        Calendar calendar = Calendar.getInstance();
+        DateFormat formato = DateFormat.getDateTimeInstance();
+        
         try {
-            bf = new BufferedWriter(new FileWriter("results.csv", true));
-            bf.write("Fecha y hora, Nombre Tablero, Fichas restantes, Tiempo\n");
+
+            bf = new BufferedWriter(new FileWriter(file, true));
+            if (file.length()==0) {
+                bf.write("Fecha y Hora; Nombre Tablero; Fichas Restantes; Tiempo");
+                bf.newLine();
+            }
+            bf.append(formato.format(calendar.getTime()) + "; " + this.getBoardName() + "; "
+                    + this.ballcounter + "; " + 
+                    DurationFormatUtils.formatDuration(timeCounter.getTime(), "mm:ss"));
+            bf.newLine();
+
         } catch (IOException ex) {
             Logger.getLogger(Senku.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                if (bf != null) {
+                    bf.close();
+                }
+            } catch (Exception e) {
+                Logger.getLogger(Senku.class.getName()).log(Level.SEVERE, null, e);
+            }
         }
+        timeCounter.reset();
     }
-    
-    public void writeCSV(long millis) {
-        try {
-            Calendar calendar = Calendar.getInstance();
-            DateFormat formato = DateFormat.getDateTimeInstance();
-            bf.append(formato.format(calendar.getTime()) + ", " + this.getBoardName() + ", " +
-                    this.ballcounter + ", " + DurationFormatUtils.formatDuration(millis, "mm:ss")+"\n");
-        } catch (IOException ex) {
-            Logger.getLogger(Senku.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+
 }

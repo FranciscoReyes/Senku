@@ -4,7 +4,6 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import org.apache.commons.lang3.time.StopWatch;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,27 +17,23 @@ import org.apache.commons.lang3.time.StopWatch;
 public class WindowSenku extends javax.swing.JFrame {
 
     //Cosas que hacer, CSV, ContadordeTiempo
-
     Senku game = new Senku();
-    StopWatch timeCounter = new StopWatch();
-    
+
     private static Locale locale = Locale.getDefault();
-    
+
     ResourceBundle bundle = ResourceBundle.getBundle("res/strings", locale);
-    
 
     /**
      * Constructor interfaz
      */
-        public WindowSenku() {
+    public WindowSenku() {
         initComponents();
         this.setLocationRelativeTo(this);
-        
-        timeCounter.start();
+
         this.writeTablero();
-        setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);       
+        setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);
     }
-    
+
     private void writeTablero() {
         area.setText(null);
         area.setText("(Y)\n");
@@ -69,11 +64,9 @@ public class WindowSenku extends javax.swing.JFrame {
                 area.append("      0 1  2  3 4  5  6 7  8 (X)");
                 break;
         }
-        
+
     }
-    
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -275,8 +268,9 @@ public class WindowSenku extends javax.swing.JFrame {
                 if (game.checkWin() == Senku.WINNER) {
                     JOptionPane.showMessageDialog(this, bundle.getString("winner"), bundle.getString("titlewinner"), JOptionPane.INFORMATION_MESSAGE, null);
                 } else {
-                    if (game.checkWin() == Senku.LOSER)
-                    JOptionPane.showMessageDialog(this, bundle.getString("lose"), bundle.getString("titlelose"), JOptionPane.INFORMATION_MESSAGE, null);
+                    if (game.checkWin() == Senku.LOSER) {
+                        JOptionPane.showMessageDialog(this, bundle.getString("lose"), bundle.getString("titlelose"), JOptionPane.INFORMATION_MESSAGE, null);
+                    }
                 }
             }
 
@@ -284,10 +278,9 @@ public class WindowSenku extends javax.swing.JFrame {
             Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, bundle.getString("errorcarac"), e1);
             JOptionPane.showMessageDialog(this, bundle.getString("errorcarac"), bundle.getString("titleerror"), JOptionPane.WARNING_MESSAGE);
         } catch (ArrayIndexOutOfBoundsException e2) {
-            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING,  bundle.getString("errPos"), e2);
+            Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, bundle.getString("errPos"), e2);
             JOptionPane.showMessageDialog(this, bundle.getString("errPos"), bundle.getString("titleerror"), JOptionPane.WARNING_MESSAGE);
         }
-
 
     }//GEN-LAST:event_MoverActionPerformed
 
@@ -303,22 +296,13 @@ public class WindowSenku extends javax.swing.JFrame {
     }//GEN-LAST:event_botonBackActionPerformed
 
     private void restartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_restartButtonActionPerformed
-        if (!timeCounter.isStopped()) {
-            timeCounter.stop();
-            timeCounter.reset();
-        }
+
         game.restartBoard();
         this.writeTablero();
-        
+
         game.createCSV();
-        game.writeCSV(timeCounter.getTime());
         
-        if(!timeCounter.isStarted()) {
-            timeCounter.start();
-        }
-        
-        
-        
+
     }//GEN-LAST:event_restartButtonActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -326,28 +310,24 @@ public class WindowSenku extends javax.swing.JFrame {
                 this, bundle.getString("exitGameMsg"), bundle.getString("sure"),
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.INFORMATION_MESSAGE);
-                
+
         if (reply == JOptionPane.OK_OPTION) {
             game.createMovesHistoryXML();
+            game.createCSV();
             this.dispose();
         }
     }//GEN-LAST:event_formWindowClosing
 
     private void selectNewBoardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectNewBoardActionPerformed
-        if (!timeCounter.isStopped()) {
-            timeCounter.stop();
-            timeCounter.reset();
-        }
-        
+       
+
         String[] levels = {"STANDARD", "FRENCH", "ASIMETRIC", "DIAMANT", "JCW"};
-        int result = JOptionPane.showOptionDialog(this, bundle.getString("chooseLevel"), bundle.getString("selectLevel"), 
+        int result = JOptionPane.showOptionDialog(this, bundle.getString("chooseLevel"), bundle.getString("selectLevel"),
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, levels, levels[0]);
-        
+
         game.selectBoard(result);
         this.writeTablero();
-        if(!timeCounter.isStarted()) {
-            timeCounter.start();
-        }
+        
         //SEGUIR
     }//GEN-LAST:event_selectNewBoardActionPerformed
 
