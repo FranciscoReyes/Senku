@@ -18,18 +18,18 @@ public class WindowSenku extends javax.swing.JFrame {
 
     //Cosas que hacer, CSV, ContadordeTiempo
     Senku game = new Senku();
-
+    
+    // Para internacionalizar textos del Main
     private static Locale locale = Locale.getDefault();
-
-    ResourceBundle bundle = ResourceBundle.getBundle("res/strings", locale);
+    private ResourceBundle bundle = ResourceBundle.getBundle("res/strings", locale);
 
     /**
      * Constructor interfaz
      */
     public WindowSenku() {
         initComponents();
+        
         this.setLocationRelativeTo(this);
-
         this.writeTablero();
         setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);
     }
@@ -273,7 +273,6 @@ public class WindowSenku extends javax.swing.JFrame {
                     }
                 }
             }
-
         } catch (NumberFormatException e1) {
             Logger.getLogger(WindowSenku.class.getName()).log(Level.WARNING, bundle.getString("errorcarac"), e1);
             JOptionPane.showMessageDialog(this, bundle.getString("errorcarac"), bundle.getString("titleerror"), JOptionPane.WARNING_MESSAGE);
@@ -320,15 +319,12 @@ public class WindowSenku extends javax.swing.JFrame {
 
     private void selectNewBoardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectNewBoardActionPerformed
        
-
         String[] levels = {"STANDARD", "FRENCH", "ASIMETRIC", "DIAMANT", "JCW"};
         int result = JOptionPane.showOptionDialog(this, bundle.getString("chooseLevel"), bundle.getString("selectLevel"),
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, levels, levels[0]);
 
         game.selectBoard(result);
-        this.writeTablero();
-        
-        //SEGUIR
+        this.writeTablero();          
     }//GEN-LAST:event_selectNewBoardActionPerformed
 
     /**
