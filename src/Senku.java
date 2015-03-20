@@ -483,7 +483,7 @@ public class Senku {
 
             bf = new BufferedWriter(new FileWriter(file, true));
             if (file.length()==0) {
-                bf.write("Fecha y Hora; Nombre Tablero; Fichas Restantes; Tiempo");
+                bf.write("Date and Time; Board Name; Remaining Chips; Match Time");
                 bf.newLine();
             }
             bf.append(formato.format(calendar.getTime()) + "; " + this.getBoardName() + "; "
