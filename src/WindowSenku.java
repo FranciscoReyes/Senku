@@ -33,7 +33,7 @@ public class WindowSenku extends javax.swing.JFrame {
         this.writeTablero();
         setDefaultCloseOperation(WindowSenku.DO_NOTHING_ON_CLOSE);
     }
-
+    // Escribe el tablero en el area
     private void writeTablero() {
         area.setText(null);
         area.setText("(Y)\n");
